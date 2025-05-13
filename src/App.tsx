@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Index from "./pages/Index";
 import LoginPage from "./pages/LoginPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminPage from "./pages/AdminPage";
 import GivePartner from "./pages/adopt/GivePartner";
 import GetPartner from "./pages/adopt/GetPartner";
 import ReportStray from "./pages/rescue/ReportStray";
@@ -24,6 +26,17 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Admin Route Component
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+  
+  if (!isAdminLoggedIn) {
+    return <Navigate to="/admin/login" replace />;
   }
   
   return <>{children}</>;
@@ -49,6 +62,8 @@ const App = () => {
         <BrowserRouter>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/admin/login" element={<AdminLoginPage />} />
+            <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             
             {/* Adopt section routes */}

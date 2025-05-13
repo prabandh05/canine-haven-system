@@ -74,6 +74,25 @@ export const db = {
     saveCollection('adoptionDogs', [...dogs, newDog]);
     return newDog;
   },
+  updateAdoptionDog: (id: string, data: Partial<Omit<AdoptionDog, 'id' | 'createdAt'>>): boolean => {
+    const dogs = getCollection<AdoptionDog>('adoptionDogs');
+    const index = dogs.findIndex(dog => dog.id === id);
+    
+    if (index === -1) return false;
+    
+    dogs[index] = { ...dogs[index], ...data };
+    saveCollection('adoptionDogs', dogs);
+    return true;
+  },
+  deleteAdoptionDog: (id: string): boolean => {
+    const dogs = getCollection<AdoptionDog>('adoptionDogs');
+    const filteredDogs = dogs.filter(dog => dog.id !== id);
+    
+    if (filteredDogs.length === dogs.length) return false;
+    
+    saveCollection('adoptionDogs', filteredDogs);
+    return true;
+  },
   
   // Stray Dogs (Report Stray -> Adopt Stray)
   getStrayDogs: (): StrayDog[] => getCollection<StrayDog>('strayDogs'),
@@ -86,6 +105,25 @@ export const db = {
     };
     saveCollection('strayDogs', [...dogs, newDog]);
     return newDog;
+  },
+  updateStrayDog: (id: string, data: Partial<Omit<StrayDog, 'id' | 'createdAt'>>): boolean => {
+    const dogs = getCollection<StrayDog>('strayDogs');
+    const index = dogs.findIndex(dog => dog.id === id);
+    
+    if (index === -1) return false;
+    
+    dogs[index] = { ...dogs[index], ...data };
+    saveCollection('strayDogs', dogs);
+    return true;
+  },
+  deleteStrayDog: (id: string): boolean => {
+    const dogs = getCollection<StrayDog>('strayDogs');
+    const filteredDogs = dogs.filter(dog => dog.id !== id);
+    
+    if (filteredDogs.length === dogs.length) return false;
+    
+    saveCollection('strayDogs', filteredDogs);
+    return true;
   },
   
   // Help Reports
@@ -100,6 +138,25 @@ export const db = {
     saveCollection('helpReports', [...reports, newReport]);
     return newReport;
   },
+  updateHelpReport: (id: string, data: Partial<Omit<HelpReport, 'id' | 'createdAt'>>): boolean => {
+    const reports = getCollection<HelpReport>('helpReports');
+    const index = reports.findIndex(report => report.id === id);
+    
+    if (index === -1) return false;
+    
+    reports[index] = { ...reports[index], ...data };
+    saveCollection('helpReports', reports);
+    return true;
+  },
+  deleteHelpReport: (id: string): boolean => {
+    const reports = getCollection<HelpReport>('helpReports');
+    const filteredReports = reports.filter(report => report.id !== id);
+    
+    if (filteredReports.length === reports.length) return false;
+    
+    saveCollection('helpReports', filteredReports);
+    return true;
+  },
   
   // Lost Dogs (Lost Dog -> Found Dog)
   getLostDogs: (): LostDog[] => getCollection<LostDog>('lostDogs'),
@@ -113,4 +170,23 @@ export const db = {
     saveCollection('lostDogs', [...dogs, newDog]);
     return newDog;
   },
+  updateLostDog: (id: string, data: Partial<Omit<LostDog, 'id' | 'createdAt'>>): boolean => {
+    const dogs = getCollection<LostDog>('lostDogs');
+    const index = dogs.findIndex(dog => dog.id === id);
+    
+    if (index === -1) return false;
+    
+    dogs[index] = { ...dogs[index], ...data };
+    saveCollection('lostDogs', dogs);
+    return true;
+  },
+  deleteLostDog: (id: string): boolean => {
+    const dogs = getCollection<LostDog>('lostDogs');
+    const filteredDogs = dogs.filter(dog => dog.id !== id);
+    
+    if (filteredDogs.length === dogs.length) return false;
+    
+    saveCollection('lostDogs', filteredDogs);
+    return true;
+  }
 };
