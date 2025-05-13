@@ -1,11 +1,13 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from '@/components/ui/use-toast';
 
 export const Navbar = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const toggleMenu = () => {
@@ -14,6 +16,15 @@ export const Navbar = () => {
 
   const closeMenu = () => {
     setIsMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn');
+    toast({
+      title: "Logged Out",
+      description: "You have been successfully logged out",
+    });
+    navigate('/login');
   };
 
   return (
@@ -39,7 +50,7 @@ export const Navbar = () => {
                 <path d="M12 15a6.978 6.978 0 0 1-3 5.703 7.18 7.18 0 0 1-3 1.297 7.177 7.177 0 0 1 3 1.297A6.978 6.978 0 0 1 12 29a6.978 6.978 0 0 1 3-5.703 7.18 7.18 0 0 1 3-1.297 7.177 7.177 0 0 1-3-1.297A6.978 6.978 0 0 1 12 15z" />
               </svg>
             </div>
-            <span className="text-xl font-bold text-gray-900">Paw Rescue</span>
+            <span className="text-xl font-bold text-gray-900">Dog Rescue</span>
           </Link>
 
           {/* Mobile menu button */}
@@ -56,33 +67,39 @@ export const Navbar = () => {
           </button>
 
           {/* Desktop navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-6">
+          <div className="hidden md:flex md:items-center md:space-x-4">
             <Link
               to="/"
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
             >
               Home
             </Link>
             <Link
-              to="/dogs"
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              to="/adopt/get"
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
             >
-              Available Dogs
+              Adopt
             </Link>
             <Link
-              to="/about"
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              to="/rescue/adopt-stray"
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
             >
-              About Us
+              Rescue
             </Link>
             <Link
-              to="/contact"
-              className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+              to="/lost-found/found"
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
             >
-              Contact
+              Lost & Found
             </Link>
-            <Button asChild variant="default" size="sm">
-              <Link to="/admin">Admin</Link>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout} 
+              className="ml-2 flex items-center gap-1"
+            >
+              <LogOut className="h-4 w-4" />
+              Logout
             </Button>
           </div>
 
@@ -93,39 +110,45 @@ export const Navbar = () => {
               isMenuOpen ? "translate-x-0" : "translate-x-full"
             )}
           >
-            <nav className="flex flex-col space-y-6">
+            <nav className="flex flex-col space-y-4">
               <Link
                 to="/"
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
                 onClick={closeMenu}
               >
                 Home
               </Link>
               <Link
-                to="/dogs"
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                to="/adopt/get"
+                className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
                 onClick={closeMenu}
               >
-                Available Dogs
+                Adopt
               </Link>
               <Link
-                to="/about"
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                to="/rescue/adopt-stray"
+                className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
                 onClick={closeMenu}
               >
-                About Us
+                Rescue
               </Link>
               <Link
-                to="/contact"
-                className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+                to="/lost-found/found"
+                className="text-gray-600 hover:text-gray-900 font-medium transition-colors px-3 py-2"
                 onClick={closeMenu}
               >
-                Contact
+                Lost & Found
               </Link>
-              <Button asChild variant="default" size="sm" className="w-full">
-                <Link to="/admin" onClick={closeMenu}>
-                  Admin
-                </Link>
+              <Button 
+                variant="ghost" 
+                onClick={() => {
+                  closeMenu();
+                  handleLogout();
+                }}
+                className="justify-start pl-3"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
               </Button>
             </nav>
           </div>

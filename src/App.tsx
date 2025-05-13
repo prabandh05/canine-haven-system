@@ -3,37 +3,73 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import Index from "./pages/Index";
-import DogsPage from "./pages/DogsPage";
-import DogDetailsPage from "./pages/DogDetailsPage";
-import AdoptionPage from "./pages/AdoptionPage";
-import AboutPage from "./pages/AboutPage";
-import ContactPage from "./pages/ContactPage";
-import AdminPage from "./pages/AdminPage";
+import LoginPage from "./pages/LoginPage";
+import GivePartner from "./pages/adopt/GivePartner";
+import GetPartner from "./pages/adopt/GetPartner";
+import ReportStray from "./pages/rescue/ReportStray";
+import AdoptStray from "./pages/rescue/AdoptStray";
+import ReportHelp from "./pages/rescue/ReportHelp";
+import LostDog from "./pages/lost-found/LostDog";
+import FoundDog from "./pages/lost-found/FoundDog";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/dogs" element={<DogsPage />} />
-          <Route path="/dogs/:id" element={<DogDetailsPage />} />
-          <Route path="/adopt/:id" element={<AdoptionPage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+// Protected Route Component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+  
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate checking auth state
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+  }, []);
+
+  if (isLoading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
+            
+            {/* Adopt section routes */}
+            <Route path="/adopt/give" element={<ProtectedRoute><GivePartner /></ProtectedRoute>} />
+            <Route path="/adopt/get" element={<ProtectedRoute><GetPartner /></ProtectedRoute>} />
+            
+            {/* Rescue section routes */}
+            <Route path="/rescue/report-stray" element={<ProtectedRoute><ReportStray /></ProtectedRoute>} />
+            <Route path="/rescue/adopt-stray" element={<ProtectedRoute><AdoptStray /></ProtectedRoute>} />
+            <Route path="/rescue/report-help" element={<ProtectedRoute><ReportHelp /></ProtectedRoute>} />
+            
+            {/* Lost & Found section routes */}
+            <Route path="/lost-found/lost" element={<ProtectedRoute><LostDog /></ProtectedRoute>} />
+            <Route path="/lost-found/found" element={<ProtectedRoute><FoundDog /></ProtectedRoute>} />
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
